@@ -1,5 +1,5 @@
 package com.example.demo.Models;
-import org.bson.types.ObjectId;
+// import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Date;
@@ -9,15 +9,42 @@ import java.util.List;
 
 @Document(collection = "users")
 public class Users {
-    private ObjectId id;
+    private String id;
     private String username;
     private String email;
     private String passwordHash;
     private String Avatar_url;
     private List<Favorites> favorites;
     private List<RecentPlay> recentPlays;
+    private List<RecentSearch> recentSearches;
+    public List<RecentSearch> getRecentSearches() {
+        return recentSearches;
+    }
+
+    public void setRecentSearches(List<RecentSearch> recentSearches) {
+        this.recentSearches = recentSearches;
+    }
+    public static class RecentSearch {
+        private String query;
+
+        public RecentSearch() {}
+
+        public RecentSearch(String query) {
+            this.query = query;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public void setQuery(String query) {
+            this.query = query;
+        }
+    }
     private Date createdAt;
     private Date updatedAt;
+    private String spotifyToken;
+    
      
 
     public Users () {
@@ -35,15 +62,22 @@ public class Users {
         this.recentPlays = null;
         this.favorites = null;
         this.updatedAt = new Date(System.currentTimeMillis());
-
+        this.spotifyToken = "";
 
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setSpotifyToken(String spotifyToken) {
+        this.spotifyToken = spotifyToken;
+    }
+    public String getSpotifyToken() {
+        return spotifyToken;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -138,44 +172,35 @@ public class Users {
     }
 
     public static class Favorites {
-        private List<ObjectId> songs;
-        private List<ObjectId> artists;
+        private List<String> songs;
+        private List<String> artists;
 
-        public List<ObjectId> getSongs() {
+        public List<String> getSongs() {
             return songs;
         }
 
-        public void setSongs(List<ObjectId> songs) {
+        public void setSongs(List<String> songs) {
             this.songs = songs;
         }
 
-        public List<ObjectId> getArtists() {
+        public List<String> getArtists() {
             return artists;
         }
 
-        public void setArtists(List<ObjectId> artists) {
+        public void setArtists(List<String> artists) {
             this.artists = artists;
         }
     }
 
     public static class RecentPlay {
-        private ObjectId songId;
-        private Date playedAt;
+        private List<String> songId;
 
-        public ObjectId getSongId() {
+        public List<String> getSongId() {
             return songId;
         }
 
-        public void setSongId(ObjectId songId) {
+        public void setSongId(List<String> songId) {
             this.songId = songId;
-        }
-
-        public Date getPlayedAt() {
-            return playedAt;
-        }
-
-        public void setPlayedAt(Date playedAt) {
-            this.playedAt = playedAt;
         }
     }
 
@@ -199,6 +224,33 @@ public class Users {
             this.moods = moods;
         }
     }
+    
+    public class ReturnUsers{
+        private String id;
+        private String username;
+        private String email;
+        private String avatarUrl;
+        private String spotifyToken;
+        private List<Favorites> favorites;
+        private List<RecentPlay> recentPlays;
+        private String tokenString;
 
-   
+        public ReturnUsers(String id, String username, String email, String avatarUrl, String spotifyToken, List<Favorites> favorites, List<RecentPlay> recentPlays, String tokenString) {
+            this.id = id;
+            this.username = username;
+            this.email = email;
+            this.avatarUrl = avatarUrl;
+            this.spotifyToken = spotifyToken;
+            this.favorites = favorites;
+            this.recentPlays = recentPlays;
+            this.tokenString = tokenString;
+        }
+
+        // Getters and setters
+    }
+
+    public ReturnUsers toReturnUsers() {
+        return new ReturnUsers(this.id, this.username, this.email, this.Avatar_url, this.spotifyToken, this.favorites ,this.recentPlays,this.spotifyToken);
+    }
+
 }
