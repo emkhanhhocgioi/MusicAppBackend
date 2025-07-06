@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 public interface UserRepostory extends MongoRepository<Users, String> {
     Users findByUsername(String username);
     Users findByEmail(String email);
+    
 
 
 }

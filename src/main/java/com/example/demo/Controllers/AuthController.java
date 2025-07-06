@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import com.example.demo.Repostories.*;
 import com.example.demo.Models.Users;
-import com.example.demo.Models.Users.ReturnUsers;
+
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.Controllers.SportifyController;;
@@ -47,9 +47,9 @@ public class AuthController {
                 return new ResponseEntity<>("Invalid password", HttpStatus.UNAUTHORIZED);
             }
 
-
-
-            return new ResponseEntity<>("Sign in successful", HttpStatus.OK); 
+            
+            
+            return new ResponseEntity<>(user.toReturnUsers(), HttpStatus.OK);
         } catch (Exception e) {
             System.out.println(e);
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

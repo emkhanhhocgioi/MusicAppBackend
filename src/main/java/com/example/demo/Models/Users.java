@@ -9,6 +9,7 @@ import java.util.List;
 
 @Document(collection = "users")
 public class Users {
+    
     private String id;
     private String username;
     private String email;
@@ -17,6 +18,7 @@ public class Users {
     private List<Favorites> favorites;
     private List<RecentPlay> recentPlays;
     private List<RecentSearch> recentSearches;
+
     public List<RecentSearch> getRecentSearches() {
         return recentSearches;
     }
@@ -59,15 +61,78 @@ public class Users {
         this.passwordHash = hashpasss;
         this.createdAt = new Date(System.currentTimeMillis());
         this.Avatar_url = "";
-        this.recentPlays = null;
-        this.favorites = null;
+        this.recentPlays = new java.util.ArrayList<>();
+        this.favorites = new java.util.ArrayList<>();
+        this.recentSearches = new java.util.ArrayList<>();
         this.updatedAt = new Date(System.currentTimeMillis());
         this.spotifyToken = "";
 
     }
+    
 
+    
     public String getId() {
         return id;
+    }
+    
+    public class ReturnUsers {
+        private String id;
+        private String username;
+        private String email;
+        private String avatarUrl;
+        private List<Favorites> favorites;
+        private List<RecentPlay> recentPlays;
+        private List<RecentSearch> recentSearches;
+
+        public ReturnUsers(String id, String username, String email, String avatarUrl, List<Favorites> favorites, List<RecentPlay> recentPlays, List<RecentSearch> recentSearches) {
+            this.id = id;
+            this.username = username;
+            this.email = email;
+            this.avatarUrl = avatarUrl;
+            this.favorites = favorites;
+            this.recentPlays = recentPlays;
+            this.recentSearches = recentSearches;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public List<Favorites> getFavorites() {
+            return favorites;
+        }
+
+        public List<RecentPlay> getRecentPlays() {
+            return recentPlays;
+        }
+
+        public List<RecentSearch> getRecentSearches() {
+            return recentSearches;
+        }
+    }
+
+    public ReturnUsers toReturnUsers() {
+        return new ReturnUsers(
+            id,
+            username,
+            email,
+            Avatar_url,
+            favorites != null ? favorites : new java.util.ArrayList<>(),
+            recentPlays != null ? recentPlays : new java.util.ArrayList<>(),
+            recentSearches != null ? recentSearches : new java.util.ArrayList<>()
+        );
     }
 
     public void setSpotifyToken(String spotifyToken) {
@@ -193,13 +258,19 @@ public class Users {
     }
 
     public static class RecentPlay {
-        private List<String> songId;
+        private String songId;
 
-        public List<String> getSongId() {
+        public RecentPlay() {}
+
+        public RecentPlay(String songId) {
+            this.songId = songId;
+        }
+
+        public String getSongId() {
             return songId;
         }
 
-        public void setSongId(List<String> songId) {
+        public void setSongId(String songId) {
             this.songId = songId;
         }
     }
@@ -225,32 +296,6 @@ public class Users {
         }
     }
     
-    public class ReturnUsers{
-        private String id;
-        private String username;
-        private String email;
-        private String avatarUrl;
-        private String spotifyToken;
-        private List<Favorites> favorites;
-        private List<RecentPlay> recentPlays;
-        private String tokenString;
 
-        public ReturnUsers(String id, String username, String email, String avatarUrl, String spotifyToken, List<Favorites> favorites, List<RecentPlay> recentPlays, String tokenString) {
-            this.id = id;
-            this.username = username;
-            this.email = email;
-            this.avatarUrl = avatarUrl;
-            this.spotifyToken = spotifyToken;
-            this.favorites = favorites;
-            this.recentPlays = recentPlays;
-            this.tokenString = tokenString;
-        }
-
-        // Getters and setters
-    }
-
-    public ReturnUsers toReturnUsers() {
-        return new ReturnUsers(this.id, this.username, this.email, this.Avatar_url, this.spotifyToken, this.favorites ,this.recentPlays,this.spotifyToken);
-    }
 
 }
