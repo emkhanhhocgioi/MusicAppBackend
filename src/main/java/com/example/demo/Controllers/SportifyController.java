@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.Models.Users;
 import com.example.demo.Repostories.UserRepostory;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,14 @@ public class SportifyController {
         String response = searchMusicByTrack(userid, token, query);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/recent")
+    public ResponseEntity<String> getRecents(@RequestParam String userid ) {
+          String token = getCachedAccessToken();
+          String response = getRecentSongs(token, userid);
+          return ResponseEntity.ok(response);
+    }
+    
 
 
     public String searchMusicByTrack (String userid,String token ,String query ){
@@ -107,6 +116,56 @@ public class SportifyController {
             return "[]";
         }
     }
+
+    
+ 
+    public String getRecentSongs(String token, String userId) {
+    Users user = userRepostory.findById(userId).orElse(null);
+    java.util.List<java.util.Map<String, Object>> tracks = new java.util.ArrayList<>();
+    if (user != null) {
+        List<Users.RecentPlay> recentPlays = user.getRecentPlays();
+        for (Users.RecentPlay song : recentPlays) {
+            try {
+                
+                String url = "https://api.spotify.com/v1/tracks/" + song.getSongId();
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", "Bearer " + token);
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+                );
+                String responseBody = response.getBody();
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                com.fasterxml.jackson.databind.JsonNode item = mapper.readTree(responseBody);
+
+                java.util.Map<String, Object> track = new java.util.HashMap<>();
+                track.put("id", item.path("id").asText());
+                track.put("title", item.path("name").asText());
+                track.put("artist", item.path("artists").get(0).path("name").asText());
+                track.put("album", item.path("album").path("name").asText());
+                track.put("duration", item.path("duration_ms").asInt());
+                track.put("externalUrl", item.path("external_urls").path("spotify").asText());
+                com.fasterxml.jackson.databind.JsonNode images = item.path("album").path("images");
+                String coverUrl = images.isArray() && images.size() > 0 ? images.get(0).path("url").asText() : "";
+                track.put("coverUrl", coverUrl);
+                tracks.add(track);
+            } catch (Exception e) {
+                System.out.println("Error fetching track info: " + e.getMessage());
+            }
+        }
+    }
+    try {
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        return mapper.writeValueAsString(tracks);
+    } catch (Exception e) {
+        return "[]";
+    }
+}
+    
 
 
    
