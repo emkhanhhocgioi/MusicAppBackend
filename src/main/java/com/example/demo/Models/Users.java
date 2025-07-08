@@ -134,7 +134,14 @@ public class Users {
             recentSearches != null ? recentSearches : new java.util.ArrayList<>()
         );
     }
-
+     public List<Favorites> getFavorites() {
+        return favorites;
+    }
+    public void setFavorites(List<Favorites> favorites) {
+    this.favorites = favorites;
+    }
+    
+    
     public void setSpotifyToken(String spotifyToken) {
         this.spotifyToken = spotifyToken;
     }
@@ -169,8 +176,6 @@ public class Users {
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
-
-    // Xóa getter/setter không sử dụng cho profile và favorites
 
     public List<RecentPlay> getRecentPlays() {
         return recentPlays;
@@ -237,23 +242,20 @@ public class Users {
     }
 
     public static class Favorites {
-        private List<String> songs;
-        private List<String> artists;
+        private String id;
 
-        public List<String> getSongs() {
-            return songs;
+        public Favorites() {}
+
+        public Favorites(String id) {
+            this.id = id;
         }
 
-        public void setSongs(List<String> songs) {
-            this.songs = songs;
+        public String getId() {
+            return id;
         }
 
-        public List<String> getArtists() {
-            return artists;
-        }
-
-        public void setArtists(List<String> artists) {
-            this.artists = artists;
+        public void setId(String id) {
+            this.id = id;
         }
     }
 
@@ -295,6 +297,8 @@ public class Users {
             this.moods = moods;
         }
     }
+
+   
     
 
 
